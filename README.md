@@ -4,7 +4,53 @@ This Spring Boot application provides a RESTful API template that demonstrates c
 
 The project implements a layered architecture with controllers, services, and models, making it an excellent starting point for building scalable Spring Boot applications. It uses Spring Boot 3.1.1 and requires Java 24, offering modern Java features and Spring framework capabilities. The application demonstrates REST API implementation, dependency injection, and proper project structure following Spring Boot best practices.
 
-## Repository Structure
+## Spring Boot Core Concepts
+
+### Components Overview
+
+1. **Controllers (@RestController)**
+   - Handle incoming HTTP requests
+   - Map URLs to specific methods using @GetMapping, @PostMapping, etc.
+   - Convert HTTP requests/responses to/from Java objects
+   - Example from our code:
+   ```java
+   @RestController
+   public class HelloController {
+       @GetMapping("/hello/{name}")
+       public String hello(@PathVariable String name) {
+           return helloService.getHello(name);
+       }
+   }
+   ```
+
+2. **Services (@Service)**
+   - Contain business logic
+   - Operate between controllers and data layer
+   - Typically used for data processing, validation, and business rules
+   - Example from our code:
+   ```java
+   @Service
+   public class HelloService {
+       public String getHello(String name) {
+           return new PersonModel(name).getName();
+       }
+   }
+   ```
+
+3. **Models**
+   - Represent data structures
+   - Define object properties and behavior
+
+### Key Annotations Explained
+
+- **@SpringBootApplication**: Combines @Configuration, @EnableAutoConfiguration, and @ComponentScan
+- **@RestController**: Marks a class as a REST API controller, automatically serializes responses to JSON
+- **@Service**: Indicates that a class contains business logic
+- **@GetMapping**: Maps HTTP GET requests to specific handler methods
+- **@PathVariable**: Extracts values from the URI path
+- **@Autowired**: Enables dependency injection (shown in constructor injection)
+
+## Project Structure
 ```
 .
 ├── pom.xml                  # Maven project configuration with Spring Boot dependencies
@@ -100,7 +146,7 @@ mvn spring-boot:run -Dspring-boot.run.arguments=--debug
 ```
 
 ## Data Flow
-The application follows a simple request-response flow where HTTP requests are processed through controllers, services, and models to generate JSON responses.
+The application demonstrates Spring Boot's component interaction through a simple request-response flow:
 
 ```ascii
 Client Request -> HelloController -> HelloService -> PersonModel
@@ -109,10 +155,10 @@ Client Request -> HelloController -> HelloService -> PersonModel
      +------------------JSON Response------------------+
 ```
 
-Component interactions:
-1. Client sends HTTP GET request to `/hello/{name}`
-2. HelloController receives the request and extracts the name parameter
-3. HelloController delegates to HelloService
-4. HelloService creates a PersonModel with the provided name
-5. HelloService formats the response as JSON
-6. Response is returned to the client through the controller
+Component Interactions:
+1. Client sends HTTP GET request to `/hello/{name}` (handled by @GetMapping)
+2. HelloController receives the request and extracts the name parameter (using @PathVariable)
+3. HelloController delegates to HelloService (injected via constructor)
+4. HelloService (marked with @Service) creates a PersonModel with the provided name
+5. HelloService formats the response
+6. Response is automatically converted to JSON by Spring's message converters
