@@ -6,6 +6,7 @@ import org.template.model.PersonModel;
 @Service
 public class HelloService {
     public String getHello(String name) {
-        return "Hello " + new PersonModel(name).getName();
+        String personName = new PersonModel(name).getName();
+        return "{\"content\":\"" + personName + "\"}";
     }
 }
